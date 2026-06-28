@@ -1,0 +1,79 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+
+\title{\textbf{ {{- book_title | le -}} }\\[0.5em]
+       \large Complete Study Notes}
+\author{AI Tutor Notes}
+\date{{ '{{' }} {{ date }} {{ '}}' }}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+{% if book_summary %}
+\section*{Book Overview}
+{{ book_summary | le }}
+{% endif %}
+
+{% for chapter in chapters %}
+\section{Chapter {{ chapter.chapter_num }}: {{ chapter.title | le }}}
+
+{% if chapter.summary %}
+\textit{ {{- chapter.summary | le -}} }
+\vspace{0.5em}
+{% endif %}
+
+{% for concept in chapter.concepts %}
+\subsection{ {{- concept.name | le -}} }
+
+{% if concept.intuition %}
+\textbf{Intuition:} {{ concept.intuition | le }}
+\vspace{0.3em}
+{% endif %}
+
+{% if concept.definition %}
+\begin{conceptbox}{ {{- concept.name | le -}} }
+{{ concept.definition | le }}
+\end{conceptbox}
+{% endif %}
+
+{% if concept.key_insight %}
+\begin{takeawaybox}
+{{ concept.key_insight | le }}
+\end{takeawaybox}
+{% endif %}
+
+{% if concept.warnings %}
+\begin{warningbox}
+\begin{itemize}
+{% for w in concept.warnings %}
+  \item {{ w | le }}
+{% endfor %}
+\end{itemize}
+\end{warningbox}
+{% endif %}
+
+{% endfor %}
+
+{% if chapter.key_takeaways %}
+\subsubsection*{Chapter Takeaways}
+\begin{enumerate}
+{% for t in chapter.key_takeaways %}
+  \item {{ t | le }}
+{% endfor %}
+\end{enumerate}
+{% endif %}
+
+{% endfor %}
+
+{% if glossary %}
+\section*{Glossary}
+\begin{description}
+{% for term, definition in glossary.items() %}
+  \item[\textbf{ {{- term | le -}} }] {{ definition | le }}
+{% endfor %}
+\end{description}
+{% endif %}
+
+\end{document}

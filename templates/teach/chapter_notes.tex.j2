@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+
+\title{\textbf{ {{- book_title | le -}} }\\[0.5em]
+       \large Chapter {{ chapter_num }}: {{ chapter_title | le }}}
+\author{AI Tutor Notes}
+\date{{ '{{' }} {{ date }} {{ '}}' }}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+{% if summary %}
+\section*{Chapter Summary}
+{{ summary | le }}
+{% endif %}
+
+{% for concept in concepts %}
+\section{ {{- concept.name | le -}} }
+
+{% if concept.intuition %}
+\subsection*{Intuition}
+{{ concept.intuition | le }}
+{% endif %}
+
+{% if concept.definition %}
+\begin{conceptbox}{ {{- concept.name | le -}} }
+{{ concept.definition | le }}
+\end{conceptbox}
+{% endif %}
+
+{% if concept.analogies %}
+\subsection*{Analogies}
+\begin{analogybox}
+\begin{itemize}
+{% for a in concept.analogies %}
+  \item {{ a | le }}
+{% endfor %}
+\end{itemize}
+\end{analogybox}
+{% endif %}
+
+{% if concept.examples %}
+\subsection*{Examples}
+{% for ex in concept.examples %}
+\begin{examplebox}{ {{- loop.index -}} }
+{{ ex | le }}
+\end{examplebox}
+{% endfor %}
+{% endif %}
+
+{% if concept.formulas %}
+\subsection*{Key Formulas}
+{% for f in concept.formulas %}
+\[
+{{ f }}
+\]
+{% endfor %}
+{% endif %}
+
+{% if concept.warnings %}
+\begin{warningbox}
+\begin{itemize}
+{% for w in concept.warnings %}
+  \item {{ w | le }}
+{% endfor %}
+\end{itemize}
+\end{warningbox}
+{% endif %}
+
+{% if concept.common_mistakes %}
+\begin{mistakebox}
+\begin{itemize}
+{% for m in concept.common_mistakes %}
+  \item {{ m | le }}
+{% endfor %}
+\end{itemize}
+\end{mistakebox}
+{% endif %}
+
+{% if concept.connections %}
+\subsection*{Connections to Other Concepts}
+\begin{itemize}
+{% for c in concept.connections %}
+  \item {{ c | le }}
+{% endfor %}
+\end{itemize}
+{% endif %}
+
+{% endfor %}
+
+{% if key_takeaways %}
+\section*{Key Takeaways}
+\begin{takeawaybox}
+\begin{enumerate}
+{% for t in key_takeaways %}
+  \item {{ t | le }}
+{% endfor %}
+\end{enumerate}
+\end{takeawaybox}
+{% endif %}
+
+{% if personal_notes %}
+\section*{Personal Notes}
+\begin{mdframed}
+{{ personal_notes | le }}
+\end{mdframed}
+{% endif %}
+
+\end{document}

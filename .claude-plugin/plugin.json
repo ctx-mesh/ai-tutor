@@ -1,0 +1,9 @@
+{
+  "name": "teach",
+  "version": "1.0.0",
+  "description": "AI Tutor — transforms PDFs into an interactive, adaptive professor that teaches, quizzes, tracks mastery, and generates LaTeX notes.",
+  "author": {
+    "name": "Anuj Sharma",
+    "email": "anujsharma411@gmail.com"
+  }
+}

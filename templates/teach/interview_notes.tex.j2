@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+
+\title{\textbf{Interview Preparation: {{ book_title | le }}}
+\author{AI Tutor Notes}
+\date{{ '{{' }} {{ date }} {{ '}}' }}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section*{Core Concepts to Know Cold}
+\begin{enumerate}
+{% for concept in top_concepts %}
+  \item \textbf{ {{- concept.name | le -}} }: {{ concept.one_liner | le }}
+{% endfor %}
+\end{enumerate}
+
+{% for chapter in chapters %}
+\section{Chapter {{ chapter.chapter_num }}: {{ chapter.title | le }}}
+
+{% for concept in chapter.concepts %}
+\subsection{ {{- concept.name | le -}} }
+
+{% if concept.definition %}
+\textbf{Definition:} {{ concept.definition | le }}
+{% endif %}
+
+{% if concept.why_it_matters %}
+\textbf{Why it matters:} {{ concept.why_it_matters | le }}
+{% endif %}
+
+{% if concept.interview_questions %}
+\textbf{Likely Interview Questions:}
+\begin{itemize}
+{% for q in concept.interview_questions %}
+  \item {{ q | le }}
+{% endfor %}
+\end{itemize}
+{% endif %}
+
+{% if concept.tradeoffs %}
+\textbf{Trade-offs:} {{ concept.tradeoffs | le }}
+{% endif %}
+
+{% if concept.common_mistakes %}
+\begin{mistakebox}
+Common interview pitfalls:
+\begin{itemize}
+{% for m in concept.common_mistakes %}
+  \item {{ m | le }}
+{% endfor %}
+\end{itemize}
+\end{mistakebox}
+{% endif %}
+
+{% endfor %}
+{% endfor %}
+
+{% if weak_topics %}
+\section*{Topics Needing More Review}
+\begin{warningbox}
+\begin{itemize}
+{% for t in weak_topics %}
+  \item {{ t.concept_name | le }} (mastery: {{ "%.0f" | format(t.composite * 100) }}\%)
+{% endfor %}
+\end{itemize}
+\end{warningbox}
+{% endif %}
+
+{% if misconceptions %}
+\section*{Common Misconceptions to Avoid}
+\begin{itemize}
+{% for m in misconceptions %}
+  \item \textit{ {{- m.concept_id | le -}} }: {{ m.text | le }}
+{% endfor %}
+\end{itemize}
+{% endif %}
+
+\end{document}

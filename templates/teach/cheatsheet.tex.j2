@@ -1,0 +1,54 @@
+\documentclass[8pt,a4paper,landscape]{article}
+\usepackage[margin=0.5in,landscape]{geometry}
+\input{preamble}
+\renewcommand{\familydefault}{\sfdefault}
+
+\title{\textbf{Cheat Sheet: {{ book_title | le }}}
+\author{}
+\date{{ '{{' }} {{ date }} {{ '}}' }}
+
+\begin{document}
+\maketitle
+\begin{multicols}{3}
+\setlength{\columnseprule}{0.4pt}
+
+{% for chapter in chapters %}
+\textbf{\large Chapter {{ chapter.chapter_num }}: {{ chapter.title | le }}}
+\vspace{0.2em}
+
+{% for concept in chapter.concepts %}
+\textbf{ {{- concept.name | le -}} }
+
+{% if concept.one_liner %}
+\textit{ {{- concept.one_liner | le -}} }
+{% elif concept.definition %}
+\textit{ {{- concept.definition[:200] | le -}} }
+{% endif %}
+
+{% if concept.formulas %}
+{% for f in concept.formulas %}
+${{ f }}$
+{% endfor %}
+{% endif %}
+
+{% if concept.key_insight %}
+\colorbox{yellow!30}{\parbox{\linewidth}{\small {{ concept.key_insight | le }}}}
+{% endif %}
+
+\vspace{0.3em}
+{% endfor %}
+
+\vspace{0.5em}
+{% endfor %}
+
+{% if glossary %}
+\textbf{\large Key Terms}
+\begin{description}[leftmargin=0pt,labelindent=0pt,style=sameline,font=\bfseries]
+{% for term, definition in glossary.items() %}
+  \item[{{ term | le }}:] \small {{ definition[:100] | le }}
+{% endfor %}
+\end{description}
+{% endif %}
+
+\end{multicols}
+\end{document}

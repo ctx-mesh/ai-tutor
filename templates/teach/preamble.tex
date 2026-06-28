@@ -1,0 +1,80 @@
+% AI Tutor — shared LaTeX preamble
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+
+\tcbuselibrary{skins,breakable}
+
+% Color scheme
+\definecolor{conceptblue}{RGB}{30,100,200}
+\definecolor{warningred}{RGB}{200,50,30}
+\definecolor{examplegreen}{RGB}{20,140,60}
+\definecolor{analogyorange}{RGB}{220,110,20}
+\definecolor{mistakepurple}{RGB}{130,30,180}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+% Concept box
+\newtcolorbox{conceptbox}[1]{
+  colback=blue!5,colframe=conceptblue,
+  title={\textbf{Concept: #1}},
+  fonttitle=\bfseries,breakable
+}
+
+% Warning box
+\newtcolorbox{warningbox}{
+  colback=red!5,colframe=warningred,
+  title={\textbf{Warning}},
+  fonttitle=\bfseries,breakable
+}
+
+% Example box
+\newtcolorbox{examplebox}[1]{
+  colback=green!5,colframe=examplegreen,
+  title={\textbf{Example: #1}},
+  fonttitle=\bfseries,breakable
+}
+
+% Analogy box
+\newtcolorbox{analogybox}{
+  colback=orange!5,colframe=analogyorange,
+  title={\textbf{Analogy}},
+  fonttitle=\bfseries,breakable
+}
+
+% Common mistakes box
+\newtcolorbox{mistakebox}{
+  colback=purple!5,colframe=mistakepurple,
+  title={\textbf{Common Mistakes}},
+  fonttitle=\bfseries,breakable
+}
+
+% Key takeaway box
+\newtcolorbox{takeawaybox}{
+  colback=yellow!10,colframe=orange!80!black,
+  title={\textbf{Key Takeaway}},
+  fonttitle=\bfseries,breakable
+}
+
+% Header/footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{\small AI Tutor Notes}}
+\lhead{\textit{\small \leftmark}}
+\rfoot{\thepage}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=conceptblue,
+  urlcolor=examplegreen,
+}
