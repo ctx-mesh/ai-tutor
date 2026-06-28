@@ -50,20 +50,25 @@ When `/teach` is invoked:
 
 ### Step 1 — Identify the PDF
 
-**Always start by scanning the current directory and loading known books:**
+**First action every time: scan the current directory for PDFs.**
 
+```bash
+ls -1 *.pdf 2>/dev/null
+```
+
+**Case A — argument given** (e.g., `/teach DDIA.pdf`):
+Use that filename directly. Skip to Step 2.
+
+**Case B — no argument given**:
+You MUST show the PDF list before doing anything else. Do not skip this.
+
+Run:
 ```bash
 ls -1 *.pdf 2>/dev/null
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py list
 ```
 
-Run both commands in parallel. Cross-reference:
-- PDFs found on disk → candidates to start
-- Books already in `.teach/` → show progress so the student can resume
-
-**If an argument was given** (e.g., `/teach DDIA.pdf`): use that file directly, skip to Step 2.
-
-**If no argument**, present a combined recommendation list:
+Then display:
 
 ```
 📂 Books in this folder:
@@ -76,34 +81,32 @@ Run both commands in parallel. Cross-reference:
     3. Kubernetes in Action.pdf
     4. Clean Code.pdf
 
-Which would you like? (enter a number, or type a filename)
+Which would you like? Enter a number or filename:
 ```
 
-Rules for the list:
-- **Already studying** (in `.teach/` AND on disk): show title, completion %, last studied. Sort by most recently accessed first.
-- **Not started yet** (on disk but not in `.teach/`): show the raw filename. Sort alphabetically.
-- If a book is in `.teach/` but the PDF is no longer on disk, show it greyed out with "(PDF not found)".
-- If only one PDF exists and it has no prior progress, skip the list and go straight to initialization.
-- If only one PDF exists and it has prior progress, skip the list and go straight to resumption.
+- **Already studying** = filename matches a slug in `.teach/` AND file exists on disk → show title, completion %, last accessed (e.g. "2 days ago", "today")
+- **Not started yet** = PDF on disk but no entry in `.teach/` → show raw filename
+- Sort "already studying" by most recently accessed first; sort "not started" alphabetically
+- Wait for the student to pick before doing anything else
 
-**If no PDFs found in the current directory:**
+**If no PDFs found:**
 ```
 No PDF files found in the current directory.
 
-To use Teach, navigate to a folder containing PDF books:
-  cd ~/Books
-  /teach
+Navigate to a folder with PDF books and run /teach again:
+  cd ~/Books && /teach
 ```
+Stop here. Do not continue.
 
-### Step 2 — Check if Already Initialized
+### Step 2 — Check if already initialized
 
-After the student picks a file (or one was given as argument):
+After the student picks a file (or one was given as an argument):
 
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py list
 ```
 
-If the book slug already exists in the list → **RETURNING STUDENT** → go to Session Resumption Protocol.
+If the book slug already exists → **RETURNING STUDENT** → go to Session Resumption Protocol.
 
 If not → **NEW BOOK** → go to Initialization Protocol.
 
