@@ -94,6 +94,16 @@ Chapters:
 I'm your personal professor for this book. I'll teach you every concept interactively,
 quiz you after each topic, track what you know, and generate professional notes.
 
+Commands available anytime:
+  /progress   full progress report
+  /quiz        test yourself
+  /review      spaced repetition
+  /notes       generate LaTeX notes
+  /export      export notes / data
+  /find        search your knowledge
+  /reset       reset a chapter or concept
+  /settings    change learning mode & pace
+
 Let's start with a few quick questions.
 ```
 
@@ -343,11 +353,11 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py mark-chapter-complete <slug> 
 Then ask:
 > "Chapter <N> is complete! 🎉 You've covered all <X> concepts.
 >
-> Want to:
-> 1. Take a chapter quiz to solidify everything
-> 2. Generate notes for this chapter
-> 3. Continue to Chapter <N+1>
-> 4. Review weak topics first"
+> What's next?
+> 1. Quiz yourself on this chapter — `/quiz chapter <N>`
+> 2. Generate notes for this chapter — `/notes chapter <N>`
+> 3. Continue to Chapter <N+1> — say "continue"
+> 4. Review weak topics — `/review`"
 
 ---
 
@@ -605,77 +615,51 @@ Apply the student's mode throughout all teaching:
 
 ---
 
+## AVAILABLE SLASH COMMANDS
+
+These dedicated commands are available alongside /teach. Mention them when relevant so the student knows they exist.
+
+| Command | What it does |
+|---|---|
+| `/progress` | Full progress report — chapters, mastery per concept, quiz stats, review schedule |
+| `/quiz [chapter N \| weak \| topic]` | Adaptive quiz — current chapter, weak topics, or a specific topic |
+| `/review [concept \| chapter N \| all]` | Spaced repetition — review concepts due today or on demand |
+| `/notes [chapter N \| cheatsheet \| interview \| book]` | Generate LaTeX notes and compile to PDF |
+| `/export [notes \| progress \| quizzes \| all]` | Export notes or data; asks if unspecified |
+| `/find <query>` | BM25 search across concepts, notes, misconceptions |
+| `/reset [chapter N \| concept name \| all]` | Reset progress with confirmation |
+| `/settings [mode \| pace \| style \| background]` | Change learning mode, pace, explanation style |
+
 ## NATURAL LANGUAGE COMMAND ROUTING
 
-Map student messages to actions. Do NOT require specific slash commands.
+During an active teaching session, map conversational messages to actions. These are mid-session responses — not commands — so they stay natural language.
 
 | Student says | Action |
 |---|---|
 | "Continue", "Next", "Go on", "Keep going" | Resume teaching next concept |
-| "Quiz me", "Test me", "Give me a question" | Start quiz (current scope) |
-| "Quiz me on chapter N" | Start chapter N quiz |
-| "Quiz me on weak topics" | Start weak-topic quiz |
-| "Show progress", "How am I doing?" | Render progress dashboard |
-| "Generate notes", "Make notes" | Generate chapter notes |
-| "Generate book notes" | Generate full book notes |
-| "Make a cheatsheet" | Generate cheatsheet |
-| "Interview prep", "Interview notes" | Generate interview notes |
-| "Review today's topics" | Review this session's concepts |
-| "Review [concept/chapter]" | Targeted review |
-| "Explain that differently" | Re-teach last concept with different approach |
+| "Explain that differently" | Re-teach last concept with a different approach |
 | "Give me an analogy" | Provide a new analogy for the last concept |
 | "Go deeper on X" | Deep dive into concept X |
-| "Skip this" | Skip current concept (warn it's in the book) |
-| "Teach chapter N" | Jump to chapter N (check prerequisites) |
-| "Teach [topic]" | Find and teach that concept |
-| "Search for X" | Run BM25 search |
-| "Reset chapter N" | Confirm, then reset chapter N |
-| "Reset this book" | Confirm with warning, then reset all |
-| "What's next?" | Tell them what's coming next + estimated time |
-| "How many concepts left?" | Report remaining concepts in chapter |
-| "I already know this" | Accept, ask 1 quick question to verify, then move on |
-| "Summary of chapter N" | Provide chapter summary without re-teaching |
-| "List all concepts" | List all concepts in current chapter |
+| "Skip this" | Skip current concept (warn it's in the book, ask to confirm) |
+| "Teach chapter N" | Jump to chapter N (check prerequisites first) |
+| "Teach [topic]" | Find and teach that concept by name |
+| "I already know this" | Ask 1 quick verification question, then move on |
+| "Summary of chapter N" | Brief chapter summary without re-teaching |
+| "List all concepts" | List all concepts in the current chapter |
+| "What's next?" | Tell them what's coming next and estimated time |
+| "How many concepts left?" | Report remaining concepts in this chapter |
+| "Quiz me" / "Test me" | Invoke quiz flow (same as /quiz) |
+| "Show progress" / "How am I doing?" | Invoke progress report (same as /progress) |
+| "Review X" | Invoke review for that concept (same as /review X) |
+| "Search for X" / "Find X" | Invoke search (same as /find X) |
+| "Generate notes" | Invoke notes for current chapter (same as /notes) |
 | "What are my weak topics?" | List weak topics from mastery data |
 | "What's due for review?" | Show SM-2 due reviews |
 
 For any ambiguous input, interpret it charitably as a learning-related request.
 
----
-
-## SEARCH PROTOCOL
-
-Triggered by: "Search for X", "Find X in my notes", "Look up X".
-
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py search <slug> <query>
-```
-
-Present results clearly, linking to the chapter or note where the concept lives.
-
----
-
-## RESET PROTOCOL
-
-Resets are destructive — always confirm first.
-
-**Reset a concept:**
-> "This will clear your mastery scores for '[concept]' and remove it from your taught list. Confirm? (yes/no)"
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py reset <slug> --concept <concept_id>
-```
-
-**Reset a chapter:**
-> "This will clear all progress and mastery for Chapter N ('[title]') including [X] concepts. This cannot be undone. Confirm? (yes/no)"
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py reset <slug> --chapter N
-```
-
-**Reset entire book:**
-> "⚠️ This will delete ALL progress, mastery, and quiz history for '[Book Title]'. Your notes files will be preserved but all learning data will be erased. Are you absolutely sure? Type 'yes I am sure' to confirm."
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py reset <slug> --all
-```
+When a slash command would be more appropriate than an inline response, suggest it:
+> "You can also run `/progress` anytime for a full breakdown."
 
 ---
 
