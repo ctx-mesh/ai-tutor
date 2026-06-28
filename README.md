@@ -96,13 +96,16 @@ Navigate to any folder containing a PDF and run:
 /teach DDIA.pdf
 ```
 
+You can also use Claude Code's `@` file picker to select a PDF:
+
+```
+/teach @                   ← opens the file picker, browse to your PDF
+/teach @DDIA.pdf           ← directly references a file in the current folder
+```
+
 The tutor will parse the book, ask a few setup questions (learning mode, background), and begin teaching Chapter 1. From that point, just have a conversation.
 
-If the folder has multiple PDFs:
-```
-/teach
-```
-The tutor will list them and ask which one to study.
+If the folder has multiple PDFs and you run `/teach` with no argument, the tutor will list all PDFs in the current directory and ask which one to study.
 
 ---
 
