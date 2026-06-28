@@ -50,17 +50,54 @@ When `/teach` is invoked:
 
 ### Step 1 — Identify the PDF
 
-If an argument is given (e.g., `/teach DDIA.pdf`):
-- Check if the file exists in the current directory
-- If multiple PDFs exist and no argument given, list them and ask which to study
+**Always start by scanning the current directory and loading known books:**
 
-If `/teach .` or no argument:
 ```bash
 ls -1 *.pdf 2>/dev/null
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py list
 ```
-List all PDFs found. If only one, use it. If multiple, ask the student to choose.
+
+Run both commands in parallel. Cross-reference:
+- PDFs found on disk → candidates to start
+- Books already in `.teach/` → show progress so the student can resume
+
+**If an argument was given** (e.g., `/teach DDIA.pdf`): use that file directly, skip to Step 2.
+
+**If no argument**, present a combined recommendation list:
+
+```
+📂 Books in this folder:
+
+  Already studying:
+    1. ✅ Designing Data-Intensive Applications  —  52% complete, last studied 2 days ago
+    2. 🔵 TCP/IP Illustrated                    —  12% complete, last studied today
+
+  Not started yet:
+    3. Kubernetes in Action.pdf
+    4. Clean Code.pdf
+
+Which would you like? (enter a number, or type a filename)
+```
+
+Rules for the list:
+- **Already studying** (in `.teach/` AND on disk): show title, completion %, last studied. Sort by most recently accessed first.
+- **Not started yet** (on disk but not in `.teach/`): show the raw filename. Sort alphabetically.
+- If a book is in `.teach/` but the PDF is no longer on disk, show it greyed out with "(PDF not found)".
+- If only one PDF exists and it has no prior progress, skip the list and go straight to initialization.
+- If only one PDF exists and it has prior progress, skip the list and go straight to resumption.
+
+**If no PDFs found in the current directory:**
+```
+No PDF files found in the current directory.
+
+To use Teach, navigate to a folder containing PDF books:
+  cd ~/Books
+  /teach
+```
 
 ### Step 2 — Check if Already Initialized
+
+After the student picks a file (or one was given as argument):
 
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/teach/cli.py list
